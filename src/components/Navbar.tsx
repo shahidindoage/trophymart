@@ -180,7 +180,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <img
             src="https://trophymart.co.in/wp-content/uploads/2024/07/TROPHY-MART-1-removebg-preview.png"
             alt="Trophy Mart Logo"
-            className="h-12 sm:h-14 w-auto object-contain  bg-white px-2 py-1 transition-transform duration-300 group-hover:scale-105"
+            className="h-12 sm:h-14 w-auto object-contain brightness-0 invert transition-transform duration-300 group-hover:scale-105"
             referrerPolicy="no-referrer"
             onError={(e) => {
               (e.currentTarget as HTMLElement).style.display = 'none';
@@ -440,7 +440,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <img
                 src="https://trophymart.co.in/wp-content/uploads/2024/07/TROPHY-MART-1-removebg-preview.png"
                 alt="Trophy Mart Logo"
-                className="h-12 w-auto object-contain rounded-md bg-white px-2 py-1"
+                className="h-12 w-auto object-contain brightness-0 invert"
                 referrerPolicy="no-referrer"
               />
             </a>

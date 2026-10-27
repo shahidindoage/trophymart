@@ -7,6 +7,7 @@ import { CategoryShowcase } from './components/CategoryShowcase';
 import { ProductCatalog } from './components/ProductCatalog';
 import { CustomizerStudio } from './components/CustomizerStudio';
 import { BespokeProcess } from './components/BespokeProcess';
+import { BespokeCustomisationSection } from './components/BespokeCustomisationSection';
 import { TestimonialsAndTrust } from './components/TestimonialsAndTrust';
 import { TrustStrip } from './components/TrustStrip';
 import { FaqSection } from './components/FaqSection';
@@ -203,10 +204,7 @@ export default function App() {
         />
 
    
-        <BespokeProcess
-          onOpenCustomizer={handleScrollToStudio}
-          onOpenQuoteModal={() => setIsQuoteModalOpen(true)}
-        />
+        <BespokeProcess />
 
         {/* Executive Testimonials */}
         <TestimonialsAndTrust />
@@ -216,6 +214,12 @@ export default function App() {
 
         {/* Frequently Asked Questions */}
         <FaqSection onOpenQuoteModal={() => setIsQuoteModalOpen(true)} />
+
+        {/* Bespoke Customisation */}
+        <BespokeCustomisationSection
+          onOpenCustomizer={handleScrollToStudio}
+          onOpenQuoteModal={() => setIsQuoteModalOpen(true)}
+        />
       </main>
 
       {/* Luxury Footer */}

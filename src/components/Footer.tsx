@@ -181,7 +181,7 @@ Shop by Type
           </div>
 
           {/* Custom Commission Banner */}
-          <div className="lg:col-span-12 order-5 bg-white border border-[#E5E0D4] shadow-sm  p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          {/* <div className="lg:col-span-12 order-5 bg-white border border-[#E5E0D4] shadow-sm  p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <h5 className="font-serif text-lg font-bold text-[#0E233E]">
                 Commission Your Signature Trophy
@@ -197,7 +197,7 @@ Shop by Type
               <span>Request Consultation</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
-          </div>
+          </div> */}
 
         </div>
 

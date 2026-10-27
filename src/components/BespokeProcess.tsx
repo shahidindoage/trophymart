@@ -1,15 +1,7 @@
 import React from 'react';
-import { ArrowRight, MapPin, Palette, Sparkles, Zap } from 'lucide-react';
+import { MapPin, Palette, Zap } from 'lucide-react';
 
-interface BespokeProcessProps {
-  onOpenCustomizer: () => void;
-  onOpenQuoteModal: () => void;
-}
-
-export const BespokeProcess: React.FC<BespokeProcessProps> = ({
-  onOpenCustomizer,
-  onOpenQuoteModal
-}) => {
+export const BespokeProcess: React.FC = () => {
   const features = [
     {
       icon: Zap,
@@ -34,23 +26,6 @@ export const BespokeProcess: React.FC<BespokeProcessProps> = ({
     }
   ];
 
-  const steps = [
-    'Tell us your vision',
-    'Collaborate with our expert designers',
-    'Personalise your trophy',
-    'Review and confirm your order',
-    'Final approval and dispatch'
-  ];
-
-  const marqueeItems = [
-    'Optical Crystal',
-    '24K Gold Plating',
-    'Laser Engraving',
-    'Bespoke Designs',
-    '66+ Cities',
-    'Factory Direct'
-  ];
-
   return (
     <section
       id="craftsmanship"
@@ -69,7 +44,7 @@ export const BespokeProcess: React.FC<BespokeProcessProps> = ({
 
         {/* Bento Feature Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          {/* Quick Turnaround — wide */}
+          {/* Quick Turnaround â€” wide */}
           <article className="lg:col-span-7 group relative overflow-hidden  bg-[#070D18] min-h-[300px] sm:min-h-[340px] border border-white/10">
             <img
               src={features[0].image}
@@ -102,7 +77,7 @@ export const BespokeProcess: React.FC<BespokeProcessProps> = ({
             </div>
           </article>
 
-          {/* Customization — tall */}
+          {/* Customization â€” tall */}
           <article className="lg:col-span-5 group relative overflow-hidden  bg-[#070D18] min-h-[300px] sm:min-h-[340px] border border-white/10">
             <img
               src={features[1].image}
@@ -135,7 +110,7 @@ export const BespokeProcess: React.FC<BespokeProcessProps> = ({
             </div>
           </article>
 
-          {/* Pan India Reach — full strip */}
+          {/* Pan India Reach â€” full strip */}
           <article className="lg:col-span-12 group relative overflow-hidden  bg-[#070D18] border border-white/10">
             <img
               src={features[2].image}
@@ -175,107 +150,6 @@ export const BespokeProcess: React.FC<BespokeProcessProps> = ({
               </div>
             </div>
           </article>
-        </div>
-
-      
-
-        {/* Bespoke Customisation Panel */}
-        <div className="relative mt-16 sm:mt-20">
-          <div className="relative overflow-hidden bg-[#070D18] border border-white/10 shadow-2xl">
-            {/* Background image */}
-            <img
-              src="https://trophymart.co.in/wp-content/uploads/2024/07/AdobeStock_734878397-scaled-1.jpeg"
-              alt=""
-              aria-hidden="true"
-              loading="lazy"
-              referrerPolicy="no-referrer"
-              className="absolute inset-0 h-full w-full object-cover object-center opacity-90"
-            />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,#070D18_0%,rgba(7,13,24,0.95)_30%,rgba(7,13,24,0.78)_48%,rgba(7,13,24,0.32)_66%,rgba(7,13,24,0.05)_88%)]" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#070D18] via-transparent to-[#070D18]/50" />
-
-            {/* Fine frame + top light */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-3 sm:inset-4 "
-            />
-            <span
-              aria-hidden="true"
-              className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#DFB967]/80 to-transparent"
-            />
-
-            <div className="relative">
-              {/* Copy */}
-              <div className="px-7 pt-12 pb-10 sm:px-12 sm:pt-14 lg:px-16 lg:pt-16 lg:pb-14">
-                <div className="max-w-xl lg:max-w-[52%]">
-                
-
-                  <h3 className="mt-5 font-serif text-[2.15rem] sm:text-5xl lg:text-[3.1rem] font-bold text-white leading-[1.02] tracking-tight">
-                    Want to customise
-                    <br />
-                    <span className="italic text-[#DFB967]">
-                      your own trophy?
-                    </span>
-                  </h3>
-
-                  <p className="mt-4 max-w-md text-sm text-white/60 leading-relaxed">
-                    Work directly with our master craftspeople to shape an award
-                    that is entirely, unmistakably yours — from first sketch to
-                    final polish.
-                  </p>
-
-                  <div className="mt-7 flex flex-wrap items-center gap-3">
-                    <button
-                      onClick={onOpenCustomizer}
-                      className="group inline-flex items-center gap-2 bg-[#DFB967] px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#070D18] transition-colors hover:bg-[#F0D08A]"
-                    >
-                      <span>Start Designing</span>
-                      <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-                    </button>
-                    <button
-                      onClick={onOpenQuoteModal}
-                      className="inline-flex items-center border border-white/25 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white transition-colors hover:border-white/70 hover:bg-white/5"
-                    >
-                      Request a Quote
-                    </button>
-                  </div>
-
-               
-                </div>
-              </div>
-
-              {/* Process band */}
-              <div className="relative border-t border-white/10 bg-[#070D18]/75 backdrop-blur-md">
-                <div className="flex items-center justify-between gap-4 px-7 pt-5 sm:px-12 lg:px-16">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-white/40">
-                    The Process
-                  </span>
-                 
-                </div>
-
-                <ol className="grid grid-cols-2 gap-x-6 gap-y-7 px-7 py-6 sm:grid-cols-5 sm:gap-0 sm:px-12 sm:py-7 lg:px-16">
-                  {steps.map((step, idx) => (
-                    <li
-                      key={step}
-                      className={`group ${
-                        idx !== 0
-                          ? 'sm:border-l sm:border-white/10 sm:pl-5 lg:pl-6'
-                          : ''
-                      }`}
-                    >
-                      <span className="font-serif text-2xl font-bold leading-none text-[#DFB967]">
-                        {String(idx + 1).padStart(2, '0')}
-                      </span>
-                      <span className="mt-3 block h-px w-6 bg-white/20 transition-all duration-500 group-hover:w-full group-hover:bg-[#DFB967]/60" />
-                      <p className="mt-3 text-[11px] sm:text-xs text-white/65 leading-relaxed">
-                        {step}
-                      </p>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
