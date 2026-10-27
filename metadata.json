@@ -1,0 +1,6 @@
+{
+  "name": "Trophy Mart — Haute Trophées & Bespoke Corporate Awards",
+  "description": "India's premier manufacturer and stockist of luxury optical crystal trophies, handcrafted championship cups, medals, and bespoke awards.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
