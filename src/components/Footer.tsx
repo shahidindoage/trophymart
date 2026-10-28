@@ -49,7 +49,7 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
 
             <p className="text-xs text-[#475569] leading-relaxed max-w-sm">
-              Indiaâ€™s foremost manufacturer and stockist of luxury optical crystal trophies, hand-cast 24k gold chalices, and bespoke corporate awards. Direct factory pricing with pan-India white-glove dispatch.
+              India's foremost manufacturer and stockist of luxury optical crystal trophies, hand-cast 24k gold chalices, and bespoke corporate awards. Direct factory pricing with pan-India white-glove dispatch.
             </p>
 
             <div className="pt-2 text-xs space-y-2 text-[#334155]">
@@ -219,7 +219,7 @@ Shop by Type
         {/* Bottom Legal / Copyright Bar */}
         <div className="mt-10 pt-6 border-t border-[#E5E0D4] flex flex-col sm:flex-row items-center justify-between text-xs text-[#64748B] gap-4">
           <div>
-            Â© 2026 Trophy Mart. All rights reserved. Handcrafted with pride in Kolkata, India.
+            © 2026 Trophy Mart. All rights reserved. Handcrafted with pride in Kolkata, India.
           </div>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-[#C5222A] transition-colors">Privacy Policy</a>

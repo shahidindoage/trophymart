@@ -51,7 +51,8 @@ export const Hero: React.FC<HeroProps> = () => {
   }, [total]);
 
   return (
-    <section className="relative w-full h-[600px] overflow-hidden bg-[#070D18]">
+    // Mobile: full banner at its actual 962x1635 aspect ratio; desktop: fixed 600px
+    <section className="relative w-full aspect-[962/1635] sm:aspect-auto sm:h-[600px] overflow-hidden bg-[#070D18]">
       {/* Sliding Images */}
       {BANNER_SLIDES.map((slide, index) => {
         const isActive = index === currentSlide;
@@ -70,7 +71,7 @@ export const Hero: React.FC<HeroProps> = () => {
                 src={slide.image}
                 alt={slide.alt}
                 className={`w-full h-full object-cover object-center transition-transform duration-[7000ms] ease-out ${
-                  isActive ? 'scale-105' : 'scale-100'
+                  isActive ? 'sm:scale-105' : 'sm:scale-100'
                 }`}
               />
             </picture>
