@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, PhoneCall } from 'lucide-react';
+import { ChevronDown, ArrowRight } from 'lucide-react';
 import { FAQS } from '../data/trophyData';
 
 interface FaqSectionProps {
@@ -58,7 +58,16 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ onOpenQuoteModal }) => {
           })}
         </div>
 
-     
+        {/* Show More Button */}
+        <div className="mt-10 sm:mt-12 flex justify-center">
+          <a
+            href="/faq"
+            className="group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 bg-[#0E233E] hover:bg-[#163359] text-white text-xs sm:text-sm font-semibold tracking-wider uppercase transition-all duration-200 shadow-sm hover:shadow"
+          >
+            <span>Show More</span>
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          </a>
+        </div>
       </div>
     </section>
   );

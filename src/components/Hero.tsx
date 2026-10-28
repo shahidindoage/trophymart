@@ -1,4 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+interface BannerSlide {
+  id: string;
+  /** Desktop banner image URL */
+  image: string;
+  /** Mobile banner image URL (shown on screens ≤ 640px) */
+  mobileImage: string;
+  alt: string;
+}
+
+const BANNER_SLIDES: BannerSlide[] = [
+  {
+    id: 'slide-1',
+    image:
+      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/Timeless%20Elegance%20Trophy%20Showcase.png',
+    mobileImage:
+      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/Timeless%20Trophy%20Grandeur.png',
+    alt: 'Timeless Elegance Trophy Showcase',
+  },
+  // {
+  //   id: 'slide-2',
+  //   image:
+  //     'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/Silver%20and%20Gold%20Trophy%20Under%20Stadium%20Lights.png',
+  //   mobileImage:
+  //     'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/Silver%20and%20Gold%20Trophy%20Under%20Stadium%20Lights.png',
+  //   alt: 'Championship Trophy Lights',
+  // },
+];
 
 interface HeroProps {
   onExploreCatalog?: () => void;
@@ -7,113 +36,84 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = () => {
-  const kicker = 'Luxury Trophy Atelier';
-  const title = 'Timeless Elegance & Grandeur in Every Trophy';
-  const description =
-    'Discover master-crafted optical crystal awards, 24k electroplated championship chalices, and bespoke corporate citations engineered to immortalize every triumph.';
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const total = BANNER_SLIDES.length;
+
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + total) % total);
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % total);
+
+  // Auto-advance banner every 5.5 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % total);
+    }, 5500);
+    return () => clearInterval(timer);
+  }, [total]);
 
   return (
-    <section className="relative w-full min-h-screen flex items-center overflow-hidden bg-[#070D18]">
-      
-      {/* Background Trophy Video */}
-      <div className="absolute inset-0 z-0">
-        <video
-          className="w-full h-full object-cover object-center lg:object-right"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster="https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/Silver%20and%20Gold%20Trophy%20Under%20Stadium%20Lights.png"
-          aria-hidden="true"
-        >
-          <source
-            src="https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/trophy.mp4"
-            type="video/mp4"
+    <section className="relative w-full h-[600px] overflow-hidden bg-[#070D18]">
+      {/* Sliding Images */}
+      {BANNER_SLIDES.map((slide, index) => {
+        const isActive = index === currentSlide;
+        return (
+          <div
+            key={slide.id}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+              isActive ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+            }`}
+          >
+            <picture>
+              {/* Mobile banner (≤ 640px) */}
+              <source media="(max-width: 640px)" srcSet={slide.mobileImage} />
+              {/* Desktop banner (> 640px) */}
+              <img
+                src={slide.image}
+                alt={slide.alt}
+                className={`w-full h-full object-cover object-center transition-transform duration-[7000ms] ease-out ${
+                  isActive ? 'scale-105' : 'scale-100'
+                }`}
+              />
+            </picture>
+          </div>
+        );
+      })}
+
+      {/* Navigation controls — hidden when only one slide */}
+      {total > 1 && (
+      <>
+      {/* Mobile: Left / Right arrow buttons (hidden on sm+) */}
+      <button
+        onClick={prevSlide}
+        aria-label="Previous slide"
+        className="sm:hidden absolute left-3 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/15 text-white hover:bg-black/70 transition"
+      >
+        <ChevronLeft size={20} />
+      </button>
+      <button
+        onClick={nextSlide}
+        aria-label="Next slide"
+        className="sm:hidden absolute right-3 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/15 text-white hover:bg-black/70 transition"
+      >
+        <ChevronRight size={20} />
+      </button>
+
+      {/* Desktop: Floating Vertical Slider Dots at bottom-right corner (hidden on mobile) */}
+      <div className="hidden sm:flex absolute bottom-8 right-8 z-30 flex-col items-center gap-2 p-2 rounded-full bg-black/50 backdrop-blur-md border border-white/15 shadow-2xl">
+        {BANNER_SLIDES.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            aria-label={`Go to slide ${index + 1}`}
+            className={`w-2.5 transition-all duration-300 rounded-full cursor-pointer ${
+              index === currentSlide
+                ? 'h-8 bg-[#DFB967]'
+                : 'h-2.5 bg-white/40 hover:bg-white/80'
+            }`}
           />
-        </video>
-
-        {/* Cinematic Scrim & Directional Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/65 to-black/25 sm:via-black/55 sm:to-transparent" />
-        <div className="absolute top-0 left-0 right-0 h-36 bg-gradient-to-b from-black/80 via-black/30 to-transparent" />
-        {/* <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#FAF9F5] via-[#FAF9F5]/40 to-transparent" /> */}
+        ))}
       </div>
-
-      {/* Hero Foreground Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-28 pb-16 sm:pt-36 sm:pb-24">
-        
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
-          {/* Left Column: Static Content */}
-          <div className="lg:col-span-7 flex flex-col justify-center space-y-6 sm:space-y-8 max-w-2xl text-left min-h-[300px]">
-
-            <div className="space-y-5">
-              {/* Small Kicker Label */}
-              <div className="inline-flex items-center gap-2.5">
-                <span className="text-xs sm:text-[13px] font-semibold tracking-[0.22em] uppercase text-white/70">
-                  {kicker}
-                </span>
-              </div>
-
-              {/* Oversized Serif Headline */}
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-white leading-[1.08] text-balance drop-shadow-md">
-                {title}
-              </h1>
-
-              {/* Refined Prose */}
-              <p className="font-sans text-sm sm:text-base lg:text-lg text-white/80 leading-relaxed max-w-xl">
-                {description}
-              </p>
-            </div>
-
-          </div>
-
-          {/* Right Column: Kept open to reveal the magnificent stadium trophy visual */}
-          <div className="lg:col-span-5 hidden lg:block" />
-
-        </div>
-
-        {/* Hero Bottom Stats Strip */}
-        <div className="mt-14 sm:mt-16 pt-8 border-t border-white/20 grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 w-full max-w-5xl">
-          <div>
-            <div className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-white tabular-nums drop-shadow-sm tracking-tight">
-              50,000 +
-            </div>
-            <div className="text-xs sm:text-sm font-medium tracking-wide text-white/80 mt-1.5">
-              Customer Served
-            </div>
-          </div>
-
-          <div>
-            <div className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-white tabular-nums drop-shadow-sm tracking-tight">
-              50 +
-            </div>
-            <div className="text-xs sm:text-sm font-medium tracking-wide text-white/80 mt-1.5">
-              Cities We Deliver
-            </div>
-          </div>
-
-          <div>
-            <div className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-white tabular-nums drop-shadow-sm tracking-tight">
-              10 +
-            </div>
-            <div className="text-xs sm:text-sm font-medium tracking-wide text-white/80 mt-1.5">
-              Years of Experience
-            </div>
-          </div>
-
-          <div>
-            <div className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-white tabular-nums drop-shadow-sm tracking-tight">
-              3,000 +
-            </div>
-            <div className="text-xs sm:text-sm font-medium tracking-wide text-white/80 mt-1.5">
-              Design and Options
-            </div>
-          </div>
-        </div>
-
-      </div>
-
+      </>
+      )}
     </section>
   );
 };
