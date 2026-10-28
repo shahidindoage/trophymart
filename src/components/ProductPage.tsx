@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Palette, ChevronDown, ChevronUp, Star, Shield, Truck, Award } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ShoppingCart, Palette, ChevronDown, ChevronUp, Star, Shield, Truck, Award, Sparkles } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Variant {
   label: string;
   size: string;
-  image: string;
-  price: string;
+  mainImage: string;
+  gallery: string[];
+  price: number;
+  originalPrice: number;
   dimensions: string;
 }
 
@@ -22,49 +25,62 @@ const VARIANTS: Variant[] = [
   {
     label: 'S',
     size: 'Small',
-    image: 'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-S-3-scaled.jpg',
-    price: '₹ 850',
+    mainImage: 'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-S-3-scaled.jpg',
+    gallery: [
+      'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-S-1-1-scaled.jpg',
+    ],
+    price: 850,
+    originalPrice: 1100,
     dimensions: 'H: 18 cm  |  W: 8 cm',
   },
   {
     label: 'M',
     size: 'Medium',
-    image: 'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-M-1-3-scaled.jpg',
-    price: '₹ 1,250',
+    mainImage: 'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-M-1-3-scaled.jpg',
+    gallery: [
+      'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-M-1-scaled.jpg',
+      'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-M-2-1-scaled.jpg',
+    ],
+    price: 1250,
+    originalPrice: 1600,
     dimensions: 'H: 24 cm  |  W: 10 cm',
   },
   {
     label: 'L',
     size: 'Large',
-    image: 'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-L-3-scaled.jpg',
-    price: '₹ 1,800',
+    mainImage: 'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-L-3-scaled.jpg',
+    gallery: [
+      'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-L-1-scaled.jpg',
+    ],
+    price: 1800,
+    originalPrice: 2300,
     dimensions: 'H: 32 cm  |  W: 13 cm',
   },
 ];
 
 const DESCRIPTION_POINTS = [
   {
-    icon: '⚫',
+    icon: '◆',
     label: 'Innovation',
-    text: 'Exclusive design with a metal body and a glass diamond depicting elegance and craftmanship. Both durable and economical.',
+    text: 'Exclusive design with a metal body and a glass diamond depicting elegance and craftsmanship. Both durable and economical.',
   },
   {
-    icon: '⚫',
+    icon: '◆',
     label: 'Customization and Personalization',
-    text: 'Customers can select from a variety of sizes, forms, and designs in addition to adding custom engravings or logos to honour certain accomplishments or occasions. Our team work closely to build trophy that suits every client.',
+    text: 'Customers can select from a variety of sizes, forms, and designs in addition to adding custom engravings or logos to honour certain accomplishments or occasions. Our team works closely to build a trophy that suits every client.',
   },
   {
-    icon: '⚫',
+    icon: '◆',
     label: 'Quality Assurance',
-    text: 'Quality is our top priority, with the shine of diamond reflected the same even after one year. One year guaranteed period.',
+    text: 'Quality is our top priority, with the shine of the diamond reflected the same even after one year. One year guaranteed period.',
   },
   {
-    icon: '⚫',
+    icon: '◆',
     label: 'Occasion',
     text: 'Fit for every occasion like star awards, employee of the month, Growth Award, Sales Award and so on.',
   },
   {
-    icon: '⚫',
+    icon: '◆',
     label: 'Precaution',
     text: 'Keep away from water and direct sunlight. In a cool dry display area.',
   },
@@ -77,9 +93,9 @@ const ACCORDIONS: AccordionItem[] = [
       <ul className="space-y-4">
         {DESCRIPTION_POINTS.map((point, i) => (
           <li key={i} className="flex gap-3">
-            <span className="mt-0.5 text-xs shrink-0">{point.icon}</span>
-            <p className="text-sm text-[#CBD5E0] leading-relaxed">
-              <span className="font-semibold text-white">{point.label}: </span>
+            <span className="mt-0.5 text-[9px] text-[#C59B27] shrink-0 leading-5">{point.icon}</span>
+            <p className="text-sm text-[#475569] leading-relaxed">
+              <span className="font-semibold text-[#0E233E]">{point.label}: </span>
               {point.text}
             </p>
           </li>
@@ -90,44 +106,63 @@ const ACCORDIONS: AccordionItem[] = [
   {
     title: 'Engraving & Customisation Details',
     content: (
-      <div className="space-y-3 text-sm text-[#CBD5E0] leading-relaxed">
+      <div className="space-y-3 text-sm text-[#475569] leading-relaxed">
         <p>
-          Each trophy can be personalised with a <span className="text-white font-medium">laser-engraved metal plate</span> on the base. You may include:
+          Freedom to create the perfect award for you - <span className="text-[#0E233E] font-medium">A 5-step customisation process</span>
+          {/* Each trophy can be personalised with a <span className="text-[#0E233E] font-medium">laser-engraved metal plate</span> on the base. You may include: */}
         </p>
-        <ul className="list-disc list-inside space-y-1.5 pl-1">
-          <li>Recipient name (up to 40 characters)</li>
-          <li>Award title / occasion</li>
-          <li>Organisation name or logo</li>
-          <li>Event date or year</li>
+        <ul className="space-y-1.5">
+          {[
+            'Tell us your vision',
+            'Collaborate with our expert designers',
+            'Personalise your trophy',
+            'Review and confirm your order',
+            'Final Approval and dispatch'
+          ].map((item) => (
+            <li key={item} className="flex items-baseline gap-2.5">
+              <span className="text-[8px] text-[#C59B27] shrink-0">◆</span>
+              <span>{item}</span>
+            </li>
+          ))}
         </ul>
-        <p className="text-xs text-[#718096] pt-1">
-          * Artwork files accepted in PNG, SVG, or AI formats. Minimum resolution 300 dpi.
-          Production lead time: 3–5 working days after artwork approval.
-        </p>
+      
       </div>
     ),
   },
   {
     title: 'Shipping & Delivery',
     content: (
-      <div className="space-y-3 text-sm text-[#CBD5E0] leading-relaxed">
+      <div className="space-y-3 text-sm text-[#475569] leading-relaxed">
         <div className="flex items-start gap-3">
-          <Truck size={16} className="text-[#DFB967] shrink-0 mt-0.5" />
+          <Truck size={16} className="text-[#C59B27] shrink-0 mt-0.5" />
           <p>Free standard shipping on orders above ₹ 5,000 across India.</p>
         </div>
         <div className="flex items-start gap-3">
-          <Shield size={16} className="text-[#DFB967] shrink-0 mt-0.5" />
+          <Shield size={16} className="text-[#C59B27] shrink-0 mt-0.5" />
           <p>Each piece is individually bubble-wrapped and shipped in a rigid gift box to prevent transit damage.</p>
         </div>
-        <ul className="list-disc list-inside space-y-1.5 pl-1">
-          <li>Metro cities: 2–4 working days</li>
-          <li>Tier 2 / Tier 3 cities: 4–7 working days</li>
-          <li>Express delivery available at additional cost</li>
+        <ul className="space-y-1.5">
+          {[
+            'Metro cities: 2–4 working days',
+            'Tier 2 / Tier 3 cities: 4–7 working days',
+            'Express delivery available at additional cost',
+          ].map((item) => (
+            <li key={item} className="flex items-baseline gap-2.5">
+              <span className="text-[8px] text-[#C59B27] shrink-0">◆</span>
+              <span>{item}</span>
+            </li>
+          ))}
         </ul>
-        <p className="text-xs text-[#718096] pt-1">* Delivery timelines are indicative and may vary during peak seasons.</p>
+        <p className="text-xs text-[#64748B] pt-1">* Delivery timelines are indicative and may vary during peak seasons.</p>
       </div>
     ),
   },
+];
+
+const TRUST_BADGES = [
+  { icon: Shield, text: '1-Year Guarantee' },
+  { icon: Truck, text: 'Free Shipping ₹5k+' },
+  { icon: Award, text: 'Premium Crafted' },
 ];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -135,16 +170,20 @@ const ACCORDIONS: AccordionItem[] = [
 function AccordionPanel({ title, content }: AccordionItem) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border border-white/10 rounded-xl overflow-hidden">
+    <div className="border border-[#E5E0D4] bg-white">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-5 py-4 text-left bg-white/5 hover:bg-white/10 transition"
+        className="w-full flex items-center justify-between px-6 py-5 text-left bg-white hover:bg-[#FAF9F5] transition-colors"
       >
-        <span className="text-sm font-semibold text-white tracking-wide">{title}</span>
-        {open ? <ChevronUp size={16} className="text-[#DFB967]" /> : <ChevronDown size={16} className="text-[#DFB967]" />}
+        <span className="font-serif text-base sm:text-lg font-bold text-[#0E233E] tracking-wide">{title}</span>
+        {open ? (
+          <ChevronUp size={16} className="text-[#C5222A] shrink-0" />
+        ) : (
+          <ChevronDown size={16} className="text-[#0E233E] shrink-0" />
+        )}
       </button>
       {open && (
-        <div className="px-5 py-4 bg-[#0D1829] border-t border-white/10">
+        <div className="px-6 py-5 border-t border-[#E5E0D4] bg-white">
           {content}
         </div>
       )}
@@ -154,110 +193,134 @@ function AccordionPanel({ title, content }: AccordionItem) {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-interface ProductPageProps {
-  onClose?: () => void;
-}
-
-export const ProductPage: React.FC<ProductPageProps> = () => {
+export const ProductPage: React.FC = () => {
   const [selectedVariant, setSelectedVariant] = useState(0);
+  const [selectedImage, setSelectedImage] = useState(0);
   const [qty, setQty] = useState(1);
 
   const variant = VARIANTS[selectedVariant];
+  const galleryImages = [variant.mainImage, ...variant.gallery];
+  const savePct = Math.round((1 - variant.price / variant.originalPrice) * 100);
 
   return (
-    <div className="min-h-screen bg-[#070D18] text-white font-sans">
+    <div className="min-h-screen bg-white text-[#161C24] font-sans">
 
       {/* ── Breadcrumb ── */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-2">
-        <p className="text-xs text-[#718096]">
-          Home &nbsp;/&nbsp; Trophies &nbsp;/&nbsp;
-          <span className="text-[#DFB967]">Starlight Gold</span>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8 pb-8">
+        <p className="text-[11px] uppercase tracking-[0.18em] text-[#64748B]">
+          <Link to="/" className="hover:text-[#C5222A] transition-colors">Home</Link>
+          <span className="mx-2.5 text-[#CBD5E1]">/</span>
+          <span>Trophies</span>
+          <span className="mx-2.5 text-[#CBD5E1]">/</span>
+          <span className="text-[#0E233E] font-semibold">Starlight Gold</span>
         </p>
       </div>
 
       {/* ── Main Grid ── */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
 
-        {/* ── Left — Image ── */}
-        <div className="space-y-4">
-          {/* Main image */}
-          <div className="relative rounded-2xl overflow-hidden bg-[#0D1829] border border-white/10 aspect-square flex items-center justify-center">
-            <img
-              src={variant.image}
-              alt={`Starlight Gold – ${variant.size}`}
-              className="w-full h-full object-contain p-6 transition-opacity duration-500"
-              key={variant.label}
-            />
-            {/* Badge */}
-            <div className="absolute top-4 left-4 flex gap-2">
-              <span className="text-[10px] font-bold tracking-widest bg-[#DFB967] text-[#070D18] px-2.5 py-1 rounded-full uppercase">
-                Best Seller
-              </span>
-            </div>
-          </div>
-
-          {/* Thumbnail strip */}
-          <div className="flex gap-3">
-            {VARIANTS.map((v, i) => (
+        {/* ── Left — Gallery (sticky on desktop; stacked on mobile with thumbs below) ── */}
+        <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 lg:sticky lg:top-28 self-start">
+          {/* Thumbnail strip — horizontal row below main image on mobile, vertical left column on desktop */}
+          <div className="flex flex-row lg:flex-col gap-3 order-2 lg:order-1 w-full lg:w-20 shrink-0">
+            {galleryImages.map((img, i) => (
               <button
-                key={v.label}
-                onClick={() => setSelectedVariant(i)}
-                className={`flex-1 rounded-xl overflow-hidden border-2 transition aspect-square ${
-                  i === selectedVariant
-                    ? 'border-[#DFB967] shadow-[0_0_12px_rgba(223,185,103,0.4)]'
-                    : 'border-white/10 hover:border-white/30'
+                key={i}
+                onClick={() => setSelectedImage(i)}
+                aria-label={`View image ${i + 1}`}
+                className={`flex-1 lg:flex-none aspect-[2/3] border bg-[#FAF9F5] overflow-hidden transition-colors ${
+                  i === selectedImage
+                    ? 'border-[#0E233E]'
+                    : 'border-[#E5E0D4] hover:border-[#0E233E]/50'
                 }`}
               >
-                <img src={v.image} alt={v.size} className="w-full h-full object-contain p-2 bg-[#0D1829]" />
+                <img
+                  src={img}
+                  alt={`Starlight Gold view ${i + 1}`}
+                  className="w-full h-full object-cover"
+                />
               </button>
             ))}
+          </div>
+
+          {/* Main image — 2:3 matches the source photos exactly (no crop) */}
+          <div className="relative flex-1 order-1 lg:order-2 border border-[#E5E0D4] bg-[#FAF9F5] aspect-[2/3] flex items-center justify-center overflow-hidden">
+            <span className="absolute top-0 left-0 z-10 bg-[#0E233E] text-white text-[10px] font-bold uppercase tracking-[0.22em] px-4 py-2.5">
+              Best Seller
+            </span>
+            <img
+              src={galleryImages[selectedImage]}
+              alt={`Starlight Gold – ${variant.size}`}
+              className="w-full h-full object-cover transition-opacity duration-500"
+              key={`${variant.label}-${selectedImage}`}
+            />
+          
           </div>
         </div>
 
         {/* ── Right — Details ── */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col">
 
-          {/* Title & rating */}
-          <div>
-            <p className="text-xs tracking-widest text-[#DFB967] uppercase mb-1 font-semibold">Trophy Mart Exclusive</p>
-            <h1 className="text-3xl sm:text-4xl font-bold leading-tight">Starlight Gold</h1>
-            <p className="text-sm text-[#718096] mt-1">SKU: TM-SG-1001</p>
-            <div className="flex items-center gap-2 mt-2">
-              {[1,2,3,4,5].map(s => (
-                <Star key={s} size={14} fill={s <= 4 ? '#DFB967' : 'none'} stroke="#DFB967" />
+          <div className="w-10 h-px bg-[#C59B27]" />
+          <p className="mt-4 text-[11px] font-bold uppercase tracking-[0.28em] text-[#C5222A]">
+            Trophy Mart Exclusive
+          </p>
+          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#0E233E] mt-2 leading-[1.05]">
+            Starlight Gold
+          </h1>
+
+          <div className="mt-4 flex items-center gap-3 text-xs">
+            <span className="tracking-wide text-[#64748B]">SKU TM-SG-1001</span>
+            <span className="h-3 w-px bg-[#E5E0D4]" />
+            <span className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <Star
+                  key={s}
+                  size={13}
+                  fill={s <= 4 ? '#C59B27' : 'none'}
+                  stroke="#C59B27"
+                  strokeWidth={1.5}
+                />
               ))}
-              <span className="text-xs text-[#718096]">(48 reviews)</span>
-            </div>
+              <span className="ml-1.5 text-[#64748B]">(48 reviews)</span>
+            </span>
           </div>
 
           {/* Price */}
-          <div className="flex items-baseline gap-3">
-            <span className="text-3xl font-bold text-[#DFB967]">{variant.price}</span>
-            <span className="text-sm text-[#718096] line-through">
-              {variant.label === 'S' ? '₹ 1,100' : variant.label === 'M' ? '₹ 1,600' : '₹ 2,300'}
+          <div className="mt-7 flex items-baseline gap-3 flex-wrap">
+            <span className="font-serif text-4xl font-bold text-[#0E233E] tabular-nums">
+              ₹{variant.price.toLocaleString('en-IN')}
             </span>
-            <span className="text-xs bg-green-900/50 text-green-400 border border-green-700/40 px-2 py-0.5 rounded-full font-semibold">
-              Save 22%
+            <span className="text-sm text-[#94A3B8] line-through tabular-nums">
+              ₹{variant.originalPrice.toLocaleString('en-IN')}
+            </span>
+            <span className="border border-[#C5222A]/30 bg-[#C5222A]/5 text-[#C5222A] text-[10px] font-bold uppercase tracking-[0.18em] px-2.5 py-1">
+              Save {savePct}%
             </span>
           </div>
+          <p className="mt-2 text-[11px] tracking-wide text-[#64748B]">
+            {variant.dimensions} · Inclusive of GST · Official tax invoice provided
+          </p>
 
-          {/* Dimensions */}
-          <p className="text-xs text-[#718096] -mt-3">{variant.dimensions}</p>
+          <div className="my-8 border-t border-[#E5E0D4]" />
 
           {/* Variant selector */}
           <div>
-            <p className="text-xs font-semibold text-[#A0AEC0] uppercase tracking-widest mb-3">
-              Select Size — <span className="text-white">{variant.size}</span>
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#0E233E]">
+              Select Size 
             </p>
-            <div className="flex gap-3">
+            <div className="mt-3.5 flex gap-3">
               {VARIANTS.map((v, i) => (
                 <button
                   key={v.label}
-                  onClick={() => setSelectedVariant(i)}
-                  className={`w-12 h-12 rounded-xl text-sm font-bold border-2 transition ${
+                  onClick={() => {
+                    setSelectedVariant(i);
+                    setSelectedImage(0);
+                  }}
+                  className={`h-12 w-12 border text-sm font-bold transition-colors ${
                     i === selectedVariant
-                      ? 'border-[#DFB967] bg-[#DFB967]/10 text-[#DFB967]'
-                      : 'border-white/15 text-[#A0AEC0] hover:border-white/40 hover:text-white bg-white/5'
+                      ? 'border-[#0E233E] bg-[#0E233E] text-white'
+                      : 'border-[#E5E0D4] bg-white text-[#475569] hover:border-[#0E233E]'
                   }`}
                 >
                   {v.label}
@@ -266,68 +329,61 @@ export const ProductPage: React.FC<ProductPageProps> = () => {
             </div>
           </div>
 
-          {/* Quantity */}
-          <div>
-            <p className="text-xs font-semibold text-[#A0AEC0] uppercase tracking-widest mb-3">Quantity</p>
-            <div className="flex items-center gap-0 w-fit border border-white/15 rounded-xl overflow-hidden">
+          {/* Quantity + CTA row */}
+          <div className="mt-9 flex flex-wrap items-stretch gap-3">
+            <div className="flex shrink-0 border border-[#E5E0D4] bg-white">
               <button
-                onClick={() => setQty(q => Math.max(1, q - 1))}
-                className="w-10 h-10 flex items-center justify-center text-white hover:bg-white/10 transition text-lg font-bold"
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                className="w-11 h-12 flex items-center justify-center text-lg font-bold text-[#0E233E] hover:bg-[#FAF9F5] transition-colors"
+                aria-label="Decrease quantity"
               >
                 −
               </button>
-              <span className="w-10 h-10 flex items-center justify-center text-sm font-semibold border-x border-white/15">
+              <span className="w-12 h-12 flex items-center justify-center text-sm font-semibold text-[#0E233E] tabular-nums border-x border-[#E5E0D4]">
                 {qty}
               </span>
               <button
-                onClick={() => setQty(q => q + 1)}
-                className="w-10 h-10 flex items-center justify-center text-white hover:bg-white/10 transition text-lg font-bold"
+                onClick={() => setQty((q) => q + 1)}
+                className="w-11 h-12 flex items-center justify-center text-lg font-bold text-[#0E233E] hover:bg-[#FAF9F5] transition-colors"
+                aria-label="Increase quantity"
               >
                 +
               </button>
             </div>
-          </div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <button className="flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-[#DFB967] hover:bg-[#c9a550] text-[#070D18] font-bold text-sm tracking-wide transition shadow-lg shadow-[#DFB967]/20">
-              <ShoppingCart size={17} />
+            <button className="flex-1 min-w-[170px] h-12 flex items-center justify-center gap-2.5 px-4 bg-[#C5222A] text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#991B1B] transition-colors">
+              <ShoppingCart size={15} />
               Add to Cart
             </button>
-            <button className="flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl border-2 border-[#DFB967]/60 text-[#DFB967] hover:bg-[#DFB967]/10 font-bold text-sm tracking-wide transition">
-              <Palette size={17} />
-              Customise This Trophy
+            <button className="flex-1 min-w-[180px] h-12 flex items-center justify-center gap-2.5 px-4 border border-[#0E233E] bg-white text-[#0E233E] text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#0E233E] hover:text-white transition-colors">
+              <Palette size={15} />
+              Customization
             </button>
           </div>
 
-          {/* Trust badges */}
-          <div className="grid grid-cols-3 gap-3 pt-2">
-            {[
-              { icon: <Shield size={15} />, text: '1-Year Guarantee' },
-              { icon: <Truck size={15} />, text: 'Free Shipping ₹5k+' },
-              { icon: <Award size={15} />, text: 'Premium Crafted' },
-            ].map((b, i) => (
-              <div key={i} className="flex flex-col items-center gap-1.5 text-center p-3 rounded-xl bg-white/5 border border-white/8">
-                <span className="text-[#DFB967]">{b.icon}</span>
-                <span className="text-[10px] text-[#A0AEC0] font-medium leading-tight">{b.text}</span>
+
+          {/* Accordions */}
+          <div className="mt-10">
+         
+            <div className="mt-4 space-y-3">
+              {ACCORDIONS.map((acc, i) => (
+                <AccordionPanel key={i} title={acc.title} content={acc.content} />
+              ))}
+            </div>
+          </div>
+
+          {/* Trust badges — hairline divided */}
+          <div className="mt-8 grid grid-cols-3 gap-px bg-[#E5E0D4] border border-[#E5E0D4]">
+            {TRUST_BADGES.map((b, i) => (
+              <div key={i} className="bg-white flex flex-col items-center gap-2 py-5 px-2 text-center">
+                <b.icon size={17} className="text-[#C59B27]" strokeWidth={1.5} />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#475569] leading-tight">{b.text}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* ── Accordion Section ── */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
-        <div className="h-px bg-white/10 mb-8" />
-        <h2 className="text-lg font-bold text-white mb-5 tracking-wide">Product Information</h2>
-        <div className="space-y-3">
-          {ACCORDIONS.map((acc, i) => (
-            <AccordionPanel key={i} title={acc.title} content={acc.content} />
-          ))}
-        </div>
-      </div>
-
     </div>
   );
 };
-
