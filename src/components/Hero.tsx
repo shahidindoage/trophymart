@@ -14,9 +14,9 @@ const BANNER_SLIDES: BannerSlide[] = [
   {
     id: 'slide-1',
     image:
-      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/Timeless%20Elegance%20Trophy%20Showcase.png',
+      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/tr1P.jpeg',
     mobileImage:
-      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/Timeless%20Trophy%20Grandeur.png',
+      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/tr1M.jpeg',
     alt: 'Timeless Elegance Trophy Showcase',
   },
   {
@@ -25,6 +25,14 @@ const BANNER_SLIDES: BannerSlide[] = [
       'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/trophy_mart_banner_1902x827.png',
     mobileImage:
       'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/so%20make%20it%20for%20mobile%20screen%20size%20,%20dimensions%20is%20962%20x%201635.png',
+    alt: 'Championship Trophy Lights',
+  },
+  {
+    id: 'slide-3',
+    image:
+      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/tr2P.png',
+    mobileImage:
+      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/tr2M.png',
     alt: 'Championship Trophy Lights',
   },
 ];
