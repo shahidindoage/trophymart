@@ -19,14 +19,14 @@ const BANNER_SLIDES: BannerSlide[] = [
       'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/Timeless%20Trophy%20Grandeur.png',
     alt: 'Timeless Elegance Trophy Showcase',
   },
-  // {
-  //   id: 'slide-2',
-  //   image:
-  //     'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/Silver%20and%20Gold%20Trophy%20Under%20Stadium%20Lights.png',
-  //   mobileImage:
-  //     'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/Silver%20and%20Gold%20Trophy%20Under%20Stadium%20Lights.png',
-  //   alt: 'Championship Trophy Lights',
-  // },
+  {
+    id: 'slide-2',
+    image:
+      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/trophy_mart_banner_1902x827.png',
+    mobileImage:
+      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/so%20make%20it%20for%20mobile%20screen%20size%20,%20dimensions%20is%20962%20x%201635.png',
+    alt: 'Championship Trophy Lights',
+  },
 ];
 
 interface HeroProps {
@@ -107,7 +107,7 @@ export const Hero: React.FC<HeroProps> = () => {
             aria-label={`Go to slide ${index + 1}`}
             className={`w-2.5 transition-all duration-300 rounded-full cursor-pointer ${
               index === currentSlide
-                ? 'h-8 bg-[#DFB967]'
+                ? 'h-8 bg-[#F30F18]'
                 : 'h-2.5 bg-white/40 hover:bg-white/80'
             }`}
           />

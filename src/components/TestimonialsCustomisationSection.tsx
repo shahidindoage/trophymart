@@ -16,7 +16,6 @@ export const TestimonialsCustomisationSection: React.FC<TestimonialsCustomisatio
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  // Gentle auto-rotation of testimonials; arrows always override
   useEffect(() => {
     if (paused) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -32,12 +31,15 @@ export const TestimonialsCustomisationSection: React.FC<TestimonialsCustomisatio
 
   const t = TESTIMONIALS[active];
 
+  // Shared card classes — both cards now identical in size treatment
+  const CARD_CLASSES =
+    'relative w-full flex-1 overflow-hidden border border-white/10 bg-white/5 backdrop-blur-sm p-5 sm:p-9 flex flex-col justify-between';
+
   return (
     <section
       id="clients"
       className="relative overflow-hidden bg-[#070D18] border-y border-white/10 py-12 sm:py-20 lg:py-24"
     >
-      {/* Background image & cinematic overlays */}
       <img
         src="https://trophymart.co.in/wp-content/uploads/2024/07/AdobeStock_734878397-scaled-1.jpeg"
         alt=""
@@ -54,7 +56,7 @@ export const TestimonialsCustomisationSection: React.FC<TestimonialsCustomisatio
       />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-stretch">
 
           {/* Left Column: Testimonials Carousel */}
           <div
@@ -67,7 +69,7 @@ export const TestimonialsCustomisationSection: React.FC<TestimonialsCustomisatio
               <span className="italic text-[#DFB967]">our craftsmanship.</span>
             </h2>
 
-            <div className="relative mt-6 sm:mt-10 flex-1 bg-white/5 backdrop-blur-sm border border-white/10 p-5 sm:p-9 flex flex-col justify-between">
+            <div className={`${CARD_CLASSES} mt-6 sm:mt-10`}>
               <div>
                 <Quote className="w-6 h-6 sm:w-8 sm:h-8 text-[#DFB967]/30 absolute top-5 right-5 sm:top-6 sm:right-6 pointer-events-none" />
 
@@ -91,7 +93,6 @@ export const TestimonialsCustomisationSection: React.FC<TestimonialsCustomisatio
                   </div>
                 </div>
 
-                {/* Prev / Next */}
                 <div className="flex shrink-0 self-end sm:self-auto gap-2">
                   <button
                     onClick={() => goTo(active - 1)}
@@ -114,12 +115,13 @@ export const TestimonialsCustomisationSection: React.FC<TestimonialsCustomisatio
 
           {/* Right Column: Bespoke Customisation Card */}
           <div className="flex flex-col h-full">
-            {/* Spacer matching the height of the left column title to align the card containers */}
-            <div className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight opacity-0 pointer-events-none select-none hidden lg:block mb-10">
-              Spacer
-            </div>
+            {/* Title block mirrors the left column so both cards top-align — only needed at lg+ */}
+            <h2 className="hidden lg:block font-serif text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white opacity-0 pointer-events-none select-none">
+              Reflections of{' '}
+              <span className="italic text-[#DFB967]">our craftsmanship.</span>
+            </h2>
 
-            <div className="relative w-full flex-1 overflow-hidden border border-white/10 bg-[#070D18]/80 backdrop-blur-sm p-6 sm:p-10 flex flex-col items-center justify-between text-center shadow-2xl">
+            <div className={`${CARD_CLASSES} mt-6 sm:mt-10 items-center text-center`}>
               <span
                 aria-hidden="true"
                 className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#DFB967]/80 to-transparent"
