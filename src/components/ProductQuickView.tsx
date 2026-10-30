@@ -16,13 +16,13 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
   onAddToCart,
   onOpenCustomizer
 }) => {
-  if (!product) return null;
-
   const [quantity, setQuantity] = useState<number>(1);
   const [recipientName, setRecipientName] = useState<string>('');
   const [awardTitle, setAwardTitle] = useState<string>('');
   const [plateFinish, setPlateFinish] = useState<'gold' | 'chrome' | 'rose-gold' | 'matte-black'>('gold');
   const [added, setAdded] = useState(false);
+
+  if (!product) return null;
 
   // Calculate tier price based on selected quantity
   const matchedTier = [...product.bulkTiers]
@@ -50,7 +50,7 @@ export const ProductQuickView: React.FC<ProductQuickViewProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div className="fixed inset-0 z-[60] overflow-y-auto overflow-x-hidden bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
       <div
         className="bg-white border border-[#E5E0D4] rounded-lg max-w-4xl w-full max-h-[92vh] overflow-y-auto overflow-x-hidden shadow-2xl relative"
         onClick={(e) => e.stopPropagation()}

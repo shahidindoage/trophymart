@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Palette, ChevronDown, ChevronUp, Star, Shield, Truck, Award, Sparkles } from 'lucide-react';
+import { ShoppingCart, Palette, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Star, Shield, Truck, Award, Sparkles, Percent } from 'lucide-react';
+import { SimilarProducts } from './SimilarProducts';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -28,10 +29,11 @@ const VARIANTS: Variant[] = [
     mainImage: 'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-S-3-scaled.jpg',
     gallery: [
       'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-S-1-1-scaled.jpg',
+      '/trophis/Starlight-Gold-1001-S-3-scaledW.jpg'
     ],
     price: 850,
     originalPrice: 1100,
-    dimensions: 'H: 18 cm  |  W: 8 cm',
+    dimensions: 'H: 18 inches  |  W: 8 inches',
   },
   {
     label: 'M',
@@ -40,6 +42,7 @@ const VARIANTS: Variant[] = [
     gallery: [
       'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-M-1-scaled.jpg',
       'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-M-2-1-scaled.jpg',
+      '/trophis/Starlight-Gold-1001-M-1-3-scaledW.jpg'
     ],
     price: 1250,
     originalPrice: 1600,
@@ -51,6 +54,7 @@ const VARIANTS: Variant[] = [
     mainImage: 'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-L-3-scaled.jpg',
     gallery: [
       'https://trophymart.co.in/wp-content/uploads/2024/09/Starlight-Gold-1001-L-1-scaled.jpg',
+      '/trophis/Starlight-Gold-1001-L-3-scaledW.jpg'
     ],
     price: 1800,
     originalPrice: 2300,
@@ -160,9 +164,20 @@ const ACCORDIONS: AccordionItem[] = [
 ];
 
 const TRUST_BADGES = [
-  { icon: Shield, text: '1-Year Guarantee' },
+  // { icon: Shield, text: '1-Year Guarantee' },
   { icon: Truck, text: 'Free Shipping ₹5k+' },
   { icon: Award, text: 'Premium Crafted' },
+];
+
+const OFFERS = [
+  {
+    headline: '10% off on first purchase',
+    detail: 'On new customer login',
+  },
+  {
+    headline: 'Additional 5% off',
+    detail: 'On purchase of minimum 10 products',
+  },
 ];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -202,11 +217,65 @@ export const ProductPage: React.FC = () => {
   const galleryImages = [variant.mainImage, ...variant.gallery];
   const savePct = Math.round((1 - variant.price / variant.originalPrice) * 100);
 
+  const stepImage = (dir: 1 | -1) => {
+    setSelectedImage((i) => (i + dir + galleryImages.length) % galleryImages.length);
+  };
+
+  const offersRef = useRef<HTMLDivElement>(null);
+  const scrollOffers = (direction: 1 | -1) => {
+    const el = offersRef.current;
+    if (!el) return;
+    const first = el.firstElementChild as HTMLElement | null;
+    const gap = parseFloat(getComputedStyle(el).columnGap || '0') || 0;
+    const step = (first?.offsetWidth ?? 280) + gap;
+    el.scrollBy({ left: direction * step, behavior: 'smooth' });
+  };
+
+  // Auto-advance the offers strip only when it overflows; pauses on hover/touch
+  useEffect(() => {
+    const el = offersRef.current;
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let paused = false;
+
+    const advance = () => {
+      if (paused || el.scrollWidth <= el.clientWidth + 4) return;
+      const first = el.firstElementChild as HTMLElement | null;
+      const gap = parseFloat(getComputedStyle(el).columnGap || '0') || 0;
+      const step = (first?.offsetWidth ?? 280) + gap;
+      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
+      el.scrollTo({ left: atEnd ? 0 : el.scrollLeft + step, behavior: 'smooth' });
+    };
+
+    const interval = window.setInterval(advance, 4000);
+
+    const pause = () => {
+      paused = true;
+    };
+    const resume = () => {
+      paused = false;
+    };
+
+    el.addEventListener('pointerenter', pause);
+    el.addEventListener('pointerleave', resume);
+    el.addEventListener('touchstart', pause, { passive: true });
+    el.addEventListener('touchend', resume);
+
+    return () => {
+      window.clearInterval(interval);
+      el.removeEventListener('pointerenter', pause);
+      el.removeEventListener('pointerleave', resume);
+      el.removeEventListener('touchstart', pause);
+      el.removeEventListener('touchend', resume);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-white text-[#161C24] font-sans">
 
-      {/* ── Breadcrumb ── */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8 pb-8">
+      {/* ── Breadcrumb (desktop only) ── */}
+      <div className="hidden lg:block max-w-6xl mx-auto px-4 sm:px-6 pt-8 pb-8">
         <p className="text-[11px] uppercase tracking-[0.18em] text-[#64748B]">
           <Link to="/" className="hover:text-[#C5222A] transition-colors">Home</Link>
           <span className="mx-2.5 text-[#CBD5E1]">/</span>
@@ -217,12 +286,12 @@ export const ProductPage: React.FC = () => {
       </div>
 
       {/* ── Main Grid ── */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-4 lg:pt-0 pb-24 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
 
         {/* ── Left — Gallery (sticky on desktop; stacked on mobile with thumbs below) ── */}
         <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 lg:sticky lg:top-28 self-start">
-          {/* Thumbnail strip — horizontal row below main image on mobile, vertical left column on desktop */}
-          <div className="flex flex-row lg:flex-col gap-3 order-2 lg:order-1 w-full lg:w-20 shrink-0">
+          {/* Thumbnail strip — desktop only; mobile uses arrows on the main image */}
+          <div className="hidden lg:flex lg:flex-col gap-3 lg:order-1 w-20 shrink-0">
             {galleryImages.map((img, i) => (
               <button
                 key={i}
@@ -243,33 +312,47 @@ export const ProductPage: React.FC = () => {
             ))}
           </div>
 
-          {/* Main image — 2:3 matches the source photos exactly (no crop) */}
-          <div className="relative flex-1 order-1 lg:order-2 border border-[#E5E0D4] bg-[#FAF9F5] aspect-[2/3] flex items-center justify-center overflow-hidden">
-            <span className="absolute top-0 left-0 z-10 bg-[#0E233E] text-white text-[10px] font-bold uppercase tracking-[0.22em] px-4 py-2.5">
+          {/* Main image — 2:3 matches the source photos exactly (no crop). Smaller on mobile with arrows. */}
+          <div className="relative order-1 lg:order-2 w-full h-[320px] sm:h-[380px] lg:h-auto lg:aspect-[2/3] lg:flex-1 border border-[#E5E0D4] bg-[#1B1B1B] lg:bg-[#FAF9F5] flex items-center justify-center overflow-hidden">
+            <span className="absolute top-0 left-0 z-20 bg-[#0E233E] text-white text-[10px] font-bold uppercase tracking-[0.22em] px-4 py-2.5">
               Best Seller
             </span>
             <img
               src={galleryImages[selectedImage]}
               alt={`Starlight Gold – ${variant.size}`}
-              className="w-full h-full object-cover transition-opacity duration-500"
+              className="relative z-10 w-full h-full object-contain transition-opacity duration-500"
               key={`${variant.label}-${selectedImage}`}
             />
-          
+
+            <button
+              onClick={() => stepImage(-1)}
+              aria-label="Previous image"
+              className="lg:hidden absolute left-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 flex items-center justify-center border border-[#0E233E]/20 bg-white/90 text-[#0E233E] hover:bg-[#0E233E] hover:text-white transition-colors"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <button
+              onClick={() => stepImage(1)}
+              aria-label="Next image"
+              className="lg:hidden absolute right-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 flex items-center justify-center border border-[#0E233E]/20 bg-white/90 text-[#0E233E] hover:bg-[#0E233E] hover:text-white transition-colors"
+            >
+              <ChevronRight size={16} />
+            </button>
           </div>
         </div>
 
         {/* ── Right — Details ── */}
         <div className="flex flex-col">
 
-          <div className="w-10 h-px bg-[#C59B27]" />
-          <p className="mt-4 text-[11px] font-bold uppercase tracking-[0.28em] text-[#C5222A]">
+          <div className="hidden lg:block w-10 h-px bg-[#C59B27]" />
+          <p className="hidden lg:block mt-4 text-[11px] font-bold uppercase tracking-[0.28em] text-[#C5222A]">
             Trophy Mart Exclusive
           </p>
-          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#0E233E] mt-2 leading-[1.05]">
+          <h1 className="order-1 lg:order-none font-serif text-4xl sm:text-5xl font-bold text-[#0E233E] mt-2 leading-[1.05]">
             Starlight Gold
           </h1>
 
-          <div className="mt-4 flex items-center gap-3 text-xs">
+          <div className="hidden sm:flex  order-4 lg:order-none mt-4  items-center gap-3 text-xs">
             <span className="tracking-wide text-[#64748B]">SKU TM-SG-1001</span>
             <span className="h-3 w-px bg-[#E5E0D4]" />
             <span className="flex items-center gap-1">
@@ -287,7 +370,7 @@ export const ProductPage: React.FC = () => {
           </div>
 
           {/* Price */}
-          <div className="mt-7 flex items-baseline gap-3 flex-wrap">
+          <div className="order-2 lg:order-none mt-3 lg:mt-7 flex items-baseline gap-3 flex-wrap">
             <span className="font-serif text-4xl font-bold text-[#0E233E] tabular-nums">
               ₹{variant.price.toLocaleString('en-IN')}
             </span>
@@ -298,40 +381,70 @@ export const ProductPage: React.FC = () => {
               Save {savePct}%
             </span>
           </div>
-          <p className="mt-2 text-[11px] tracking-wide text-[#64748B]">
+          <p className="hidden sm:block  order-3 lg:order-none mt-2 text-[11px] tracking-wide text-[#64748B]">
             {variant.dimensions} · Inclusive of GST · Official tax invoice provided
           </p>
 
-          <div className="my-8 border-t border-[#E5E0D4]" />
+          <div className="hidden sm:block order-5 lg:order-none my-8 border-t border-[#E5E0D4]" />
 
-          {/* Variant selector */}
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#0E233E]">
-              Select Size 
-            </p>
-            <div className="mt-3.5 flex gap-3">
-              {VARIANTS.map((v, i) => (
-                <button
-                  key={v.label}
-                  onClick={() => {
-                    setSelectedVariant(i);
-                    setSelectedImage(0);
-                  }}
-                  className={`h-12 w-12 border text-sm font-bold transition-colors ${
-                    i === selectedVariant
-                      ? 'border-[#0E233E] bg-[#0E233E] text-white'
-                      : 'border-[#E5E0D4] bg-white text-[#475569] hover:border-[#0E233E]'
-                  }`}
-                >
-                  {v.label}
-                </button>
-              ))}
+        
+          <div className="order-4 sm:order-6 lg:order-none mt-6 sm:mt-0">
+            <div className="flex items-end justify-between gap-6">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#0E233E]">
+                  Select Size
+                </p>
+                <div className="mt-3.5 flex gap-3">
+                  {VARIANTS.map((v, i) => (
+                    <button
+                      key={v.label}
+                      onClick={() => {
+                        setSelectedVariant(i);
+                        setSelectedImage(0);
+                      }}
+                      className={`h-12 w-12 border text-sm font-bold transition-colors ${
+                        i === selectedVariant
+                          ? 'border-[#0E233E] bg-[#0E233E] text-white'
+                          : 'border-[#E5E0D4] bg-white text-[#475569] hover:border-[#0E233E]'
+                      }`}
+                    >
+                      {v.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quantity — mobile only, beside size */}
+              <div className="sm:hidden">
+                <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#0E233E]">
+                  Quantity
+                </p>
+                <div className="mt-3.5 flex h-12 border border-[#E5E0D4] bg-white">
+                  <button
+                    onClick={() => setQty((q) => Math.max(1, q - 1))}
+                    className="w-10 flex items-center justify-center text-lg font-bold text-[#0E233E] hover:bg-[#FAF9F5] transition-colors"
+                    aria-label="Decrease quantity"
+                  >
+                    −
+                  </button>
+                  <span className="w-10 flex items-center justify-center text-sm font-semibold text-[#0E233E] tabular-nums border-x border-[#E5E0D4]">
+                    {qty}
+                  </span>
+                  <button
+                    onClick={() => setQty((q) => q + 1)}
+                    className="w-10 flex items-center justify-center text-lg font-bold text-[#0E233E] hover:bg-[#FAF9F5] transition-colors"
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Quantity + CTA row */}
-          <div className="mt-9 flex flex-wrap items-stretch gap-3">
-            <div className="flex shrink-0 border border-[#E5E0D4] bg-white">
+          {/* CTA row — Add to Cart + Branding side by side (quantity joins on desktop) */}
+          <div className="order-3 sm:order-7 lg:order-none mt-5 sm:mt-9 flex flex-wrap items-stretch gap-3">
+            <div className="hidden sm:flex shrink-0 border border-[#E5E0D4] bg-white">
               <button
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
                 className="w-11 h-12 flex items-center justify-center text-lg font-bold text-[#0E233E] hover:bg-[#FAF9F5] transition-colors"
@@ -351,19 +464,78 @@ export const ProductPage: React.FC = () => {
               </button>
             </div>
 
-            <button className="flex-1 min-w-[170px] h-12 flex items-center justify-center gap-2.5 px-4 bg-[#C5222A] text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#991B1B] transition-colors">
-              <ShoppingCart size={15} />
+            <button className="flex-1 min-w-0 sm:min-w-[170px] h-12 flex items-center justify-center gap-2 px-3 sm:px-4 bg-[#C5222A] text-white text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#991B1B] transition-colors whitespace-nowrap">
+              <ShoppingCart size={15} className="shrink-0" />
               Add to Cart
             </button>
-            <button className="flex-1 min-w-[180px] h-12 flex items-center justify-center gap-2.5 px-4 border border-[#0E233E] bg-white text-[#0E233E] text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#0E233E] hover:text-white transition-colors">
-              <Palette size={15} />
-              Customization
+            <button className="flex-1 min-w-0 sm:min-w-[180px] h-12 flex items-center justify-center gap-2 px-3 sm:px-4 border border-[#0E233E] bg-white text-[#0E233E] text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-[#0E233E] hover:text-white transition-colors whitespace-nowrap">
+              <Palette size={15} className="shrink-0" />
+              BRANDING
             </button>
           </div>
 
+          {/* Offers slider */}
+          <div className="order-8 lg:order-none mt-10">
+            <div className="flex items-end justify-between gap-4 mb-4">
+              <h3 className="font-serif text-lg sm:text-xl font-bold text-[#0E233E] tracking-wide">
+                Offers Available
+              </h3>
+              <div className={`flex items-center gap-2 shrink-0 ${OFFERS.length <= 2 ? 'sm:hidden' : ''}`}>
+                <button
+                  onClick={() => scrollOffers(-1)}
+                  aria-label="Previous offers"
+                  className="w-8 h-8 sm:w-9 sm:h-9 border border-[#0E233E]/25 bg-white flex items-center justify-center text-[#0E233E] transition-colors hover:bg-[#0E233E] hover:text-white"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => scrollOffers(1)}
+                  aria-label="Next offers"
+                  className="w-8 h-8 sm:w-9 sm:h-9 border border-[#0E233E]/25 bg-white flex items-center justify-center text-[#0E233E] transition-colors hover:bg-[#0E233E] hover:text-white"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            <div
+              ref={offersRef}
+              className="flex gap-3 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
+              {OFFERS.map((offer) => (
+                <article
+                  key={offer.headline}
+                  className="relative snap-start shrink-0 w-[86%] sm:w-[calc(50%-0.375rem)] overflow-hidden border border-[#E5E0D4] bg-[#FAF9F5] px-5 py-5"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -top-7 -right-7 h-20 w-20 rounded-full bg-[#C59B27]/10 ring-1 ring-[#C59B27]/30"
+                  />
+                  <Percent
+                    size={16}
+                    strokeWidth={1.5}
+                    aria-hidden="true"
+                    className="pointer-events-none absolute top-2.5 right-2.5 text-[#C59B27]"
+                  />
+
+                  <p className="pr-8 font-serif text-base font-bold leading-snug text-[#0E233E]">
+                    {offer.headline}
+                  </p>
+                  <p className="mt-1 text-[11px] leading-relaxed text-[#64748B]">
+                    {offer.detail}
+                  </p>
+                </article>
+              ))}
+            </div>
+
+            <p className="mt-3 flex items-start gap-2 text-[10px] leading-relaxed text-[#64748B]">
+              <span aria-hidden="true" className="text-[8px] text-[#C59B27] leading-4 shrink-0">◆</span>
+              <span>Up to 10 products no discount — offers applicable above that.</span>
+            </p>
+          </div>
 
           {/* Accordions */}
-          <div className="mt-10">
+          <div className="order-9 lg:order-none mt-10">
          
             <div className="mt-4 space-y-3">
               {ACCORDIONS.map((acc, i) => (
@@ -373,7 +545,7 @@ export const ProductPage: React.FC = () => {
           </div>
 
           {/* Trust badges — hairline divided */}
-          <div className="mt-8 grid grid-cols-3 gap-px bg-[#E5E0D4] border border-[#E5E0D4]">
+          <div className="order-10 lg:order-none mt-8 grid grid-flow-col auto-cols-fr gap-px bg-[#E5E0D4] border border-[#E5E0D4]">
             {TRUST_BADGES.map((b, i) => (
               <div key={i} className="bg-white flex flex-col items-center gap-2 py-5 px-2 text-center">
                 <b.icon size={17} className="text-[#C59B27]" strokeWidth={1.5} />
@@ -383,6 +555,11 @@ export const ProductPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <SimilarProducts
+        currentCategory="crystal"
+        excludeId="tm-cryst-01"
+      />
 
     </div>
   );

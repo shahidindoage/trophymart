@@ -264,6 +264,142 @@ export const TROPHY_PRODUCTS: TrophyProduct[] = [
   }
 ];
 
+export const RELATED_PRODUCTS: TrophyProduct[] = [
+  {
+    id: 'tm-cryst-08',
+    name: 'Rolex Diamond',
+    category: 'Trophies',
+    categoryLabel: 'Trophies',
+    price: 3450,
+    originalPrice: 4200,
+    material: 'Optically Pure K9 Beveled Crystal & Cobalt Glass',
+    height: '11.5 inches (29 cm)',
+    weight: '2.4 kg',
+    rating: 4.9,
+    reviewsCount: 38,
+    sku: 'TM-CRY-882',
+    image: 'https://trophymart.co.in/wp-content/uploads/2024/09/Rolex-Diamond-1002-L-1-2-scaled.jpg',
+    turnaroundDays: 2,
+    badge: 'Flagship Award',
+    silhouetteType: 'obelisk',
+    primaryColor: '#0E233E',
+    description: 'Precision diamond-faceted prism crafted from grade K9 optical crystal with hand-cut beveled prisms that disperse ambient illumination with brilliant prismatic clarity.',
+    features: [
+      'Zero-bubble high refractive index optical crystal',
+      'Laser sub-surface 3D engraving or high-contrast surface frost',
+      'Solid crystal base with optional embedded sapphire accent',
+      'Supplied in satin-lined presentation gift casket'
+    ],
+    inStock: true,
+    bulkTiers: [
+      { minQty: 1, price: 3450, discount: 'Standard' },
+      { minQty: 10, price: 3050, discount: '12% Off' },
+      { minQty: 50, price: 2650, discount: '23% Off' },
+      { minQty: 100, price: 2350, discount: '32% Off' }
+    ]
+  },
+  {
+    id: 'tm-gold-02',
+    name: 'Indigo',
+    category: 'Trophies',
+    categoryLabel: 'Trophies',
+    price: 6800,
+    originalPrice: 7900,
+    material: 'Spun Brass with 24k Gold Electroplate & Nero Marquina Base',
+    height: '16.0 inches (40.5 cm)',
+    weight: '3.8 kg',
+    rating: 5.0,
+    reviewsCount: 42,
+    sku: 'TM-CUP-901',
+    image: 'https://trophymart.co.in/wp-content/uploads/2024/09/Indigo-1003-L-4-scaled.jpg',
+    turnaroundDays: 3,
+    badge: 'Tournament Choice',
+    silhouetteType: 'cup',
+    primaryColor: '#C59B27',
+    description: 'A monument to victory. Italianate sculpted scroll handles, hand-spun mirror-polished golden bell, and heavy weighted black mineral plinth suited for historic tournaments.',
+    features: [
+      '24-Karat gold mirror electroplate guaranteed against tarnish',
+      'Hand-chased acanthus leaf filigree on stem and handles',
+      'Heavyweight square stepped pedestal for wrap-around engraved plinth',
+      'Suitable for annual champion perpetual nameplates'
+    ],
+    inStock: true,
+    bulkTiers: [
+      { minQty: 1, price: 6800, discount: 'Standard' },
+      { minQty: 5, price: 6100, discount: '10% Off' },
+      { minQty: 25, price: 5400, discount: '20% Off' },
+      { minQty: 50, price: 4750, discount: '30% Off' }
+    ]
+  },
+  {
+    id: 'tm-plaq-03',
+    name: 'Omega Star',
+    category: 'Trophies',
+    categoryLabel: 'Trophies',
+    price: 2650,
+    originalPrice: 3200,
+    material: 'Natural Piano-Lacquered Walnut & Tempered Beveled Glass',
+    height: '12 x 9 inches',
+    weight: '1.6 kg',
+    rating: 4.8,
+    reviewsCount: 29,
+    sku: 'TM-PLQ-404',
+    image: 'https://trophymart.co.in/wp-content/uploads/2024/09/Omega-Star-1004-L-4-scaled.jpg',
+    turnaroundDays: 2,
+    badge: 'Executive Top Pick',
+    silhouetteType: 'plaque',
+    primaryColor: '#2B1810',
+    description: 'Designed for boardroom prestige. A thick sheet of crystal-clear tempered float glass suspended on four brushed brass stand-off studs over mirror-buffed dark walnut timber.',
+    features: [
+      'Architectural brass offset standoffs with concealed wall or desk anchors',
+      'Full-color UV cured direct printing or metallic foil hot-stamping',
+      'High-gloss multi-coat hand-buffed lacquer edge finish',
+      'Dual orientation: portrait or landscape display'
+    ],
+    inStock: true,
+    bulkTiers: [
+      { minQty: 1, price: 2650, discount: 'Standard' },
+      { minQty: 15, price: 2280, discount: '14% Off' },
+      { minQty: 50, price: 1950, discount: '26% Off' },
+      { minQty: 100, price: 1690, discount: '36% Off' }
+    ]
+  },
+  {
+    id: 'tm-cryst-04',
+    name: 'Electron',
+    category: 'Trophies',
+    categoryLabel: 'Trophies',
+    price: 3950,
+    originalPrice: 4800,
+    material: 'Solid K9 Crystal with Ruby Red Dichroic Reflection',
+    height: '10.5 inches (26.7 cm)',
+    weight: '2.1 kg',
+    rating: 4.9,
+    reviewsCount: 51,
+    sku: 'TM-CRY-710',
+    image: 'https://trophymart.co.in/wp-content/uploads/2024/09/Electron-1005-L-3-1-scaled.jpg',
+    turnaroundDays: 2,
+    badge: 'Leadership Award',
+    silhouetteType: 'star',
+    primaryColor: '#C5222A',
+    description: 'A dynamic five-point star soaring from a chiseled ascending pedestal. Infused with a proprietary ruby dichroic bevel layer that casts warm crimson tones into incident rays.',
+    features: [
+      'Deep sandcarved relief etching for exceptional tactile depth',
+      'Trophy Mart signature crest ruby undertone',
+      'Weighted solid crystal pedestal with felt underlay',
+      'Pre-engraved or custom personalized within 48 hours'
+    ],
+    inStock: true,
+    bulkTiers: [
+      { minQty: 1, price: 3950, discount: 'Standard' },
+      { minQty: 10, price: 3480, discount: '12% Off' },
+      { minQty: 40, price: 3050, discount: '23% Off' },
+      { minQty: 100, price: 2680, discount: '32% Off' }
+    ]
+  },
+ 
+];
+
 export const CLIENT_LOGOS = [
   {
     name: 'Wipro',

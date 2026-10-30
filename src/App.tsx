@@ -15,6 +15,7 @@ import { TrophyProduct, CartItem } from './types/trophy';
 import { TROPHY_PRODUCTS } from './data/trophyData';
 import { TestimonialsCustomisationSection } from './components/TestimonialsCustomisationSection';
 import { ProductPage } from './components/ProductPage';
+import { CartPage } from './components/CartPage';
 
 export default function App() {
   const navigate = useNavigate();
@@ -35,7 +36,6 @@ export default function App() {
     }
   ]);
 
-  const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState<boolean>(false);
   const [quickViewProduct, setQuickViewProduct] = useState<TrophyProduct | null>(null);
@@ -66,6 +66,13 @@ export default function App() {
   };
 
   const handleScrollToStudio = () => {
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        document.getElementById('studio')?.scrollIntoView({ behavior: 'smooth' });
+      }, 120);
+      return;
+    }
     const studioElem = document.getElementById('studio');
     if (studioElem) {
       studioElem.scrollIntoView({ behavior: 'smooth' });
@@ -134,11 +141,6 @@ export default function App() {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const handleProceedToCheckout = () => {
-    setIsCartOpen(false);
-    setIsCheckoutModalOpen(true);
-  };
-
   const handleOrderCompleted = () => {
     setCartItems([]);
   };
@@ -153,7 +155,7 @@ export default function App() {
         onOpenSearch={() => setIsSearchOpen(true)}
         onSelectCategory={handleSelectCategory}
         onOpenContact={() => setIsQuoteModalOpen(true)}
-        onOpenCart={() => setIsCartOpen(true)}
+        onOpenCart={() => navigate('/cart')}
         cartCount={cartCount}
         onOpenAccount={() => showToast('Account portal coming soon')}
       />
@@ -233,6 +235,26 @@ export default function App() {
           }
         />
 
+        {/* Commemorative bag page */}
+        <Route
+          path="/cart"
+          element={
+            <>
+              <CartPage
+                items={cartItems}
+                onUpdateQuantity={handleUpdateQuantity}
+                onRemoveItem={handleRemoveItem}
+                onCheckout={() => setIsCheckoutModalOpen(true)}
+              />
+              <Footer
+                onSelectCategory={handleSelectCategory}
+                onOpenCustomizer={handleScrollToStudio}
+                onOpenQuoteModal={() => setIsQuoteModalOpen(true)}
+              />
+            </>
+          }
+        />
+
       </Routes>
 
       {/* ── Shared Modals (rendered outside Routes so they persist across navigation) ── */}
@@ -243,6 +265,7 @@ export default function App() {
         onSelectCategory={handleSelectCategory}
       />
       <ProductQuickView
+        key={quickViewProduct?.id ?? 'none'}
         product={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
         onAddToCart={handleAddToCart}

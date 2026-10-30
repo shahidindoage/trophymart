@@ -1,7 +1,7 @@
 export interface TrophyProduct {
   id: string;
   name: string;
-  category: 'crystal' | 'sculpted-gold' | 'plaques' | 'medals' | 'bespoke';
+  category: 'crystal' | 'sculpted-gold' | 'plaques' | 'medals' | 'bespoke' | 'Trophies';
   categoryLabel: string;
   price: number;
   originalPrice?: number;
