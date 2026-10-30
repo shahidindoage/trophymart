@@ -14,9 +14,9 @@ const BANNER_SLIDES: BannerSlide[] = [
   {
     id: 'slide-1',
     image:
-      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/tr1P.jpeg',
+      '/aboutweb.jpeg',
     mobileImage:
-      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/tr1M.jpeg',
+      'aboutmobile.jpeg',
     alt: 'Timeless Elegance Trophy Showcase',
   },
   {
@@ -30,7 +30,7 @@ const BANNER_SLIDES: BannerSlide[] = [
   {
     id: 'slide-3',
     image:
-      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/tr2P.png',
+      '/Celebrateweb.jpeg',
     mobileImage:
       'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/tr2M.png',
     alt: 'Championship Trophy Lights',

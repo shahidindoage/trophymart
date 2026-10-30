@@ -16,6 +16,7 @@ import { TROPHY_PRODUCTS } from './data/trophyData';
 import { TestimonialsCustomisationSection } from './components/TestimonialsCustomisationSection';
 import { ProductPage } from './components/ProductPage';
 import { CartPage } from './components/CartPage';
+import { CollectionPage } from './components/CollectionPage';
 
 export default function App() {
   const navigate = useNavigate();
@@ -226,6 +227,21 @@ export default function App() {
           element={
             <>
               <ProductPage />
+              <Footer
+                onSelectCategory={handleSelectCategory}
+                onOpenCustomizer={handleScrollToStudio}
+                onOpenQuoteModal={() => setIsQuoteModalOpen(true)}
+              />
+            </>
+          }
+        />
+
+        {/* Trophies collection page */}
+        <Route
+          path="/collection/trophies"
+          element={
+            <>
+              <CollectionPage onOpenQuoteModal={() => setIsQuoteModalOpen(true)} />
               <Footer
                 onSelectCategory={handleSelectCategory}
                 onOpenCustomizer={handleScrollToStudio}
