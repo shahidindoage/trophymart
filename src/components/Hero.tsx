@@ -14,9 +14,9 @@ const BANNER_SLIDES: BannerSlide[] = [
   {
     id: 'slide-1',
     image:
-      '/aboutweb.jpeg',
+      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/aboutweb2.jpeg',
     mobileImage:
-      'aboutmobile.jpeg',
+      'https://vrfacwizigigcpowkrye.supabase.co/storage/v1/object/public/trophy/aboutmobile2.jpeg',
     alt: 'Timeless Elegance Trophy Showcase',
   },
   {
