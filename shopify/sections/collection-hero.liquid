@@ -83,7 +83,9 @@
         <h1 class="ch-title">{{ hero_heading }}</h1>
         {%- assign hero_text = section.settings.text | default: tm_collection.description -%}
         {%- if hero_text != blank -%}
-          <div class="ch-desc">{{ hero_text }}</div>
+          <div class="ch-desc">
+            {%- if hero_text.type != blank -%}{{ hero_text | metafield_tag }}{%- else -%}{{ hero_text }}{%- endif -%}
+          </div>
         {%- endif -%}
       </div>
     </div>
