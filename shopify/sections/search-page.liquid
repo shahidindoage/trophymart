@@ -1,0 +1,394 @@
+{% comment %}
+  Trophy Mart - Search page (design language of SearchModal.tsx / collection pages).
+
+  PURE CSS. Upload ONLY sections/search-page.liquid.
+  Install: Customize -> Search -> Add section -> "Search Page".
+
+  - Search field prefilled with the query, quick category chips.
+  - Real Shopify search results (products render as cards, pages/articles as
+    link rows).
+  - "Load More" appends the next page through the section rendering API.
+{% endcomment %}
+
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+.tm-sr, .tm-sr *, .tm-sr *::before, .tm-sr *::after { box-sizing: border-box; }
+.tm-sr { font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #161C24; line-height: 1.4; background: #fff; }
+:where(.tm-sr) :where(h1, h2, h3, p, ul, li) { margin: 0; padding: 0; }
+:where(.tm-sr) :where(ul) { list-style: none; }
+:where(.tm-sr) :where(a) { color: inherit; text-decoration: none; }
+:where(.tm-sr) :where(img) { display: block; border: 0; max-width: none; }
+:where(.tm-sr) :where(button) { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; -webkit-appearance: none; appearance: none; }
+:where(.tm-sr) :where(form) { margin: 0; }
+:where(.tm-sr) :where(input) { font: inherit; margin: 0; }
+.tm-sr [hidden] { display: none !important; }
+.tm-sr :focus-visible { outline: 2px solid #C5222A; outline-offset: 2px; }
+
+.sr-wrap { max-width: 1152px; margin: 0 auto; padding: 0 16px; }
+
+/* Breadcrumb */
+.sr-crumbs { padding: 32px 0 24px; }
+.sr-crumb { font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em; color: #64748B; }
+.sr-crumb a { transition: color 0.15s; }
+.sr-crumb a:hover { color: #C5222A; }
+.sr-sep { margin: 0 10px; color: #CBD5E1; }
+.sr-current { color: #0E233E; font-weight: 600; }
+
+/* Heading */
+.sr-head { margin-bottom: 24px; }
+.sr-rule { width: 40px; height: 1px; background: #C59B27; }
+.sr-kicker { margin-top: 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.28em; color: #C5222A; }
+.sr-title { margin-top: 8px; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 36px; font-weight: 700; color: #0E233E; line-height: 1.05; }
+.sr-title em { font-style: italic; color: #C5222A; }
+.sr-sub { margin-top: 12px; font-size: 12px; color: #64748B; letter-spacing: 0.025em; }
+
+/* Search bar */
+.sr-form { display: flex; align-items: stretch; gap: 10px; margin-bottom: 16px; }
+.sr-field { flex: 1; display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 16px; background: #fff; border: 1px solid #D5CFBF; transition: border-color 0.15s, box-shadow 0.15s; }
+.sr-field:focus-within { border-color: rgba(197, 34, 42, 0.4); box-shadow: 0 0 0 2px rgba(197, 34, 42, 0.15); }
+.sr-field svg { width: 18px; height: 18px; color: #94A3B8; flex-shrink: 0; }
+.sr-input { flex: 1; min-width: 0; height: 100%; border: 0; outline: none; background: transparent; font-size: 14px; color: #0E233E; -webkit-appearance: none; appearance: none; }
+.sr-input::placeholder { color: #94A3B8; opacity: 1; }
+.sr-submit { height: 52px; padding: 0 24px; background: #0E233E; color: #fff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; transition: background-color 0.15s; flex-shrink: 0; }
+.sr-submit:hover { background: #1A365D; }
+
+/* Quick chips */
+.sr-chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+.sr-chips-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B; }
+.sr-chip { padding: 4px 10px; font-size: 12px; font-weight: 500; color: #0E233E; background: #fff; border: 1px solid #E2E8F0; transition: border-color 0.15s, color 0.15s; }
+.sr-chip:hover { border-color: #0E233E; color: #C5222A; }
+
+/* Result meta */
+.sr-meta { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.sr-count { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; color: #64748B; }
+
+/* Grid */
+.sr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.sr-card { display: flex; flex-direction: column; background: #fff; border: 1px solid #E5E0D4; }
+.sr-media { position: relative; aspect-ratio: 3 / 5; background: #FAF9F5; overflow: hidden; }
+.sr-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 0.5s; }
+.sr-card:hover .sr-media img { transform: scale(1.05); }
+.sr-media-fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.sr-media-fallback svg { width: 60%; height: 60%; }
+.sr-body { padding: 16px; display: flex; flex-direction: column; flex: 1; }
+.sr-cat { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; color: #C59B27; }
+.sr-name { margin-top: 6px; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 15px; font-weight: 700; line-height: 1.375; color: #0E233E; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.sr-price-row { margin-top: auto; padding-top: 16px; display: flex; align-items: baseline; gap: 8px; }
+.sr-price { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 18px; font-weight: 700; color: #0E233E; font-variant-numeric: tabular-nums; }
+.sr-compare { font-size: 11px; color: #94A3B8; text-decoration: line-through; font-variant-numeric: tabular-nums; }
+
+/* Non-product results */
+.sr-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; border: 1px solid #E5E0D4; background: #fff; transition: background-color 0.15s; }
+.sr-row:hover { background: #FAF9F5; }
+.sr-row-type { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; color: #C59B27; }
+.sr-row-title { margin-top: 4px; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 17px; font-weight: 700; color: #0E233E; }
+.sr-row svg { width: 14px; height: 14px; color: #0E233E; flex-shrink: 0; }
+
+/* Empty */
+.sr-empty { padding: 72px 24px; border: 1px solid #E5E0D4; text-align: center; }
+.sr-empty-title { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 24px; font-weight: 700; color: #0E233E; }
+.sr-empty-text { margin: 8px auto 0; max-width: 420px; font-size: 12px; line-height: 1.7; color: #64748B; }
+
+/* Load more */
+.sr-more-wrap { display: flex; justify-content: center; margin-top: 32px; }
+.sr-more { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 32px; border: 1px solid #0E233E; background: #fff; color: #0E233E; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; transition: background-color 0.15s, color 0.15s; }
+.sr-more:hover { background: #0E233E; color: #fff; }
+.sr-more:disabled { opacity: 0.55; cursor: wait; }
+
+.sr-section-title { margin: 32px 0 12px; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 20px; font-weight: 700; color: #0E233E; }
+.sr-rows { display: flex; flex-direction: column; gap: 10px; }
+
+@media (min-width: 640px) {
+  .sr-wrap { padding: 0 24px; }
+  .sr-title { font-size: 48px; }
+  .sr-grid { gap: 20px; }
+  .sr-body { padding: 20px; }
+  .sr-name { font-size: 18px; }
+  .sr-price { font-size: 20px; }
+  .sr-empty-title { font-size: 30px; }
+}
+@media (min-width: 1024px) {
+  .sr-grid { grid-template-columns: repeat(4, 1fr); }
+}
+</style>
+
+<div class="tm-sr" data-tm-search data-section-id="{{ section.id }}">
+  <!-- Breadcrumb -->
+  <div class="sr-wrap sr-crumbs">
+    <p class="sr-crumb">
+      <a href="{{ shop.url }}">Home</a>
+      <span class="sr-sep">/</span>
+      <span class="sr-current">{{ section.settings.page_label }}</span>
+    </p>
+  </div>
+
+  <div class="sr-wrap">
+    <div class="sr-head">
+      <div class="sr-rule"></div>
+      <p class="sr-kicker">{{ section.settings.kicker }}</p>
+      <h1 class="sr-title">{{ section.settings.heading }} <em>{{ section.settings.heading_accent }}</em></h1>
+      <p class="sr-sub">{{ section.settings.subtext }}</p>
+    </div>
+
+    <form class="sr-form" action="{{ routes.search_url }}" method="get" role="search">
+      <label class="sr-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        <input class="sr-input" type="search" name="q" value="{{ search.terms | escape }}"
+          placeholder="{{ section.settings.placeholder }}" autocomplete="off" aria-label="Search">
+      </label>
+      <button type="submit" class="sr-submit">Search</button>
+    </form>
+
+    <div class="sr-chips">
+      <span class="sr-chips-label">{{ section.settings.chips_label }}</span>
+      {%- if section.settings.quick_menu != blank and section.settings.quick_menu.links.size > 0 -%}
+        {%- for link in section.settings.quick_menu.links -%}
+          <a class="sr-chip" href="{{ link.url }}">{{ link.title }}</a>
+        {%- endfor -%}
+      {%- else -%}
+        {%- assign chip_terms = 'Crystal|Gold|Plaques|Medals|Bespoke' | split: '|' -%}
+        {%- for term in chip_terms -%}
+          <a class="sr-chip" href="{{ routes.search_url }}?q={{ term | url_encode }}&amp;type=product">{{ term }}</a>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if search.performed -%}
+      {%- paginate search.results by 12 -%}
+        <div class="sr-meta">
+          <p class="sr-count">
+            {%- if search.results_count == 0 -%}
+              0 results
+            {%- else -%}
+              {{ search.results_count }} {% if search.results_count == 1 %}result{% else %}results{% endif %} for &ldquo;{{ search.terms }}&rdquo;
+            {%- endif -%}
+          </p>
+        </div>
+
+        {%- if search.results_count == 0 -%}
+          <div class="sr-empty">
+            <h2 class="sr-empty-title">No pieces matched &ldquo;{{ search.terms }}&rdquo;</h2>
+            <p class="sr-empty-text">Try a broader term like &ldquo;crystal&rdquo;, &ldquo;plaque&rdquo; or &ldquo;cup&rdquo; — or browse the collections above.</p>
+          </div>
+        {%- else -%}
+          {%- assign product_count = 0 -%}
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}{%- assign product_count = product_count | plus: 1 -%}{%- endif -%}
+          {%- endfor -%}
+          {%- if product_count > 0 -%}
+          <div class="sr-grid" data-tm-search-grid>
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}
+                {%- assign ct_height = item.metafields.custom.height.value -%}
+                {%- if ct_height == blank -%}
+                  {%- assign ct_height = item.selected_or_first_available_variant.metafields.custom.height.value -%}
+                {%- endif -%}
+                <a class="sr-card" href="{{ item.url }}">
+                  <div class="sr-media">
+                    {%- if item.featured_image -%}
+                      <img src="{{ item.featured_image | image_url: width: 600 }}" alt="{{ item.title | escape }}" loading="lazy">
+                    {%- else -%}
+                      <span class="sr-media-fallback">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#B98A2E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8"></path><path d="M12 21v-6"></path><path d="M7 3h10v6a5 5 0 0 1-10 0V3Z"></path><path d="M7 5H4v2a3 3 0 0 0 3 3"></path><path d="M17 5h3v2a3 3 0 0 1-3 3"></path></svg>
+                      </span>
+                    {%- endif -%}
+                  </div>
+                  <div class="sr-body">
+                    <p class="sr-cat">{{ item.type | default: 'Trophy Mart' }}</p>
+                    <h2 class="sr-name">{{ item.title }}</h2>
+                    <div class="sr-price-row">
+                      <span class="sr-price">{{ item.price | money }}</span>
+                      {%- if item.compare_at_price > item.price -%}
+                        <span class="sr-compare">{{ item.compare_at_price | money }}</span>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                </a>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+          {%- endif -%}
+
+          {%- assign other_count = 0 -%}
+          {%- for item in search.results -%}
+            {%- unless item.object_type == 'product' -%}{%- assign other_count = other_count | plus: 1 -%}{%- endunless -%}
+          {%- endfor -%}
+          {%- if other_count > 0 -%}
+            <h2 class="sr-section-title">Pages &amp; guides</h2>
+            <div class="sr-rows">
+              {%- for item in search.results -%}
+                {%- unless item.object_type == 'product' -%}
+                  <a class="sr-row" href="{{ item.url }}">
+                    <div>
+                      <p class="sr-row-type">{{ item.object_type | capitalize }}</p>
+                      <p class="sr-row-title">{{ item.title }}</p>
+                    </div>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                  </a>
+                {%- endunless -%}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          {%- if paginate.pages > 1 -%}
+            <div class="sr-more-wrap">
+              <button type="button" class="sr-more" data-tm-search-more
+                data-next-url="{% if paginate.next %}{{ paginate.next.url }}{% endif %}"
+                {% unless paginate.next %}hidden{% endunless %}>
+                Load More
+              </button>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- else -%}
+      <div class="sr-empty">
+        <h2 class="sr-empty-title">{{ section.settings.idle_title }}</h2>
+        <p class="sr-empty-text">{{ section.settings.idle_text }}</p>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div style="height:64px"></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  function initRoot(root) {
+    if (root.getAttribute('data-tm-init') === '1') return;
+    root.setAttribute('data-tm-init', '1');
+
+    var sectionId = root.getAttribute('data-section-id');
+    var grid = root.querySelector('[data-tm-search-grid]');
+    var btn = root.querySelector('[data-tm-search-more]');
+    if (!grid || !btn) return;
+
+    btn.addEventListener('click', function () {
+      var url = btn.getAttribute('data-next-url');
+      if (!url) return;
+      btn.disabled = true;
+      var sep = url.indexOf('?') > -1 ? '&' : '?';
+
+      fetch(url + sep + 'section_id=' + sectionId)
+        .then(function (r) { return r.text(); })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var newGrid = doc.querySelector('[data-tm-search-grid]');
+          var newBtn = doc.querySelector('[data-tm-search-more]');
+
+          if (newGrid) {
+            Array.prototype.slice.call(newGrid.children).forEach(function (card) {
+              grid.appendChild(card);
+            });
+          }
+
+          var nextUrl = newBtn ? newBtn.getAttribute('data-next-url') : '';
+          if (nextUrl) {
+            btn.setAttribute('data-next-url', nextUrl);
+            btn.disabled = false;
+          } else {
+            btn.parentNode.removeChild(btn);
+          }
+        })
+        .catch(function () {
+          btn.disabled = false;
+        });
+    });
+  }
+
+  function initAll() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-tm-search]'), initRoot);
+  }
+
+  document.addEventListener('shopify:section:load', function () {
+    var root = document.querySelector('[data-tm-search]');
+    if (root) root.removeAttribute('data-tm-init');
+    initAll();
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Search Page",
+  "settings": [
+    {
+      "type": "text",
+      "id": "page_label",
+      "label": "Breadcrumb label",
+      "default": "Search"
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker",
+      "default": "Find Your Piece"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Search the"
+    },
+    {
+      "type": "text",
+      "id": "heading_accent",
+      "label": "Heading accent (italic)",
+      "default": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "Search by trophy name, material, crystal, gold chalice or occasion."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Search placeholder",
+      "default": "Search trophies by name, material, crystal, gold chalice..."
+    },
+    {
+      "type": "text",
+      "id": "chips_label",
+      "label": "Quick chips label",
+      "default": "Categories:"
+    },
+    {
+      "type": "link_list",
+      "id": "quick_menu",
+      "label": "Quick category menu (blank = built-in chips)"
+    },
+    {
+      "type": "header",
+      "content": "Before searching"
+    },
+    {
+      "type": "text",
+      "id": "idle_title",
+      "label": "Idle title",
+      "default": "Search our atelier"
+    },
+    {
+      "type": "textarea",
+      "id": "idle_text",
+      "label": "Idle text",
+      "default": "Type a name, material or occasion above — or pick a category chip to start browsing."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Search Page"
+    }
+  ]
+}
+{% endschema %}
